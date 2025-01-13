@@ -1,7 +1,6 @@
 # @DarkSourceOfCode
 # This bash scripts creats a new ubuntu into a jarvis system
 
-
 # change the splash screen
 echo "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -128,8 +127,6 @@ EOF
 echo -e "\e[93mdone\e[97m"
 sleep 2
 
-# to execute sql files
-sudo mysql < MLBots/__setup__/sql_setup_pyroutes.sql
 
 
 
@@ -150,12 +147,23 @@ sleep 2
 echo -e "\e[32mDownloading and installing NVM...\e[97m"
 sleep 2
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+if [ $? -ne 0 ]; then
+    echo -e "\e[31mFailed to download and install NVM. Exiting.\e[97m"
+    exit 1
+fi
 source ~/.bashrc
 nvm install 22
-sleep 2
+if [ $? -ne 0 ]; then
+    echo -e "\e[31mFailed to install Node.js version 22 using NVM. Exiting.\e[97m"
+    exit 1
+fi
 node -v 
 nvm current 
-npm -v 
+npm -v
+if [ $? -ne 0 ]; then
+    echo -e "\e[31mNPM is not installed correctly. Exiting.\e[97m"
+    exit 1
+fi
 echo -e "\e[93mdone\e[97m"
 sleep 2
 
@@ -184,15 +192,21 @@ sleep 2
 # creating the virtual environment for python node and react
 echo -e "\e[32mSetting up environments.../\e[97m"
 sleep 2
+echo -e "\e[32mSetting up python.../\e[97m"
 python3 -m venv venv3
 
+echo -e "\e[32mSetting up react.../\e[97m"
 cd reactSDS
 npm install
 cd ..
 
+echo -e "\e[32mSetting up node.../\e[97m"
 cd nodeSDS
 npm install
 cd ..
+
+echo -e "\e[32mSetting up mysql.../\e[97m"
+sudo mysql < MLBots/__setup__/sql_setup_pyroutes.sql
 
 echo -e "\e[93mdone\e[97m"
 sleep 2
